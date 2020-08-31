@@ -1,0 +1,33 @@
+.ellipsis{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 添加页面左右边缘padding的类名
+.left-right-padding-box{
+  padding: 0 .05rem;
+  overflow: hidden;
+}
+
+a{
+  color: #000; // 去掉a标签的默认字体颜色
+  text-decoration: none;
+}
+
+.clear{
+  clear: both;
+  overflow: hidden;
+}
+
+// 通过传递 passive 为 false 来明确告诉浏览器：事件处理程序调用 preventDefault 来阻止默认滑动行为
+* { touch-action: pan-y; } 
+
+// 去除input和button标签的默认样式
+input, button{ outline: none; background: none; border: none} 
+
+// 去除button在ios上的默认样式
+input[type="button"], input[type="submit"], input[type="reset"] ,
+button {
+    -webkit-appearance:none;
+}
