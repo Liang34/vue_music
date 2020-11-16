@@ -12,6 +12,14 @@ module.exports={
         .set('common',resolve('./src/common'))
         .set('api', resolve('./src/api'))
     //set第一个参数：设置的别名，第二个参数：设置的路径
+    // 使用CDN加速
+    // config.set('externals', {
+    //   vue: 'Vue',
+    //   'vue-router': 'VueRouter',
+    //   axios: 'axios',
+    //   'vue-lazyload':'vue-lazyload',
+    //   'fastclick': 'fastclick',
+    // })
   },
   devServer:{
     proxy:{

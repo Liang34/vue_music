@@ -54,7 +54,7 @@ import { createRecommendSong } from 'common/js/song'
 import { reqBanner, reqRecommendList, getRecommendMusic } from 'api/recommend'
 import Scroll from 'components/Scroll'
 import Slider from 'components/Slider'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapActions } from 'vuex'
 
 export default {
   data () {
@@ -96,7 +96,13 @@ export default {
     ...mapMutations({
       setMuiscList: 'SET_MUSIC_LIST',
       setFullScreen: 'SET_FULL_SCREEN'
-    })
+    }),
+    selectSong (item) {
+      this.insertSong(item)
+    },
+    ...mapActions([
+      'insertSong'
+    ])
   },
   components: {
     Slider,

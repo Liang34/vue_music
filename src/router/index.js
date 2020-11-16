@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Recommand from 'views/Recommend/Recommend'
-import My from 'views/My/My'
-import MusicList from 'views/MusicList/MusicList'
+// import Recommand from 'views/Recommend/Recommend'
+// import My from 'views/My/My'
+// import MusicList from 'views/MusicList/MusicList'
 // import Singer from 'views/Singer/Singer'
-import SingerDetail from 'views/Singer/SingerDetail'
-import Rank from 'views/Rank/Rank'
-import RankDetail from 'components/RankDetail'
-import Search from 'views/Search/Search'
+// import SingerDetail from 'views/Singer/SingerDetail'
+// import Rank from 'views/Rank/Rank'
+// import RankDetail from 'components/RankDetail'
+// import Search from 'views/Search/Search'
 
 Vue.use(VueRouter)
 
@@ -18,17 +18,17 @@ const routes = [
   },
   {
     path: '/recommend',
-    component: Recommand,
+    component: resolve => (require(['views/Recommend/Recommend'], resolve)),
     children: [
       {
         path: ':id',
-        component: MusicList
+        component: resolve => (require(['views/MusicList/MusicList'], resolve))
       }
     ]
   },
   {
     path: '/my',
-    component: My
+    component: resolve => (require(['views/My/My'], resolve))
   },
   {
     path: '/singer',
@@ -36,31 +36,31 @@ const routes = [
     children: [
       {
         path: ':id',
-        component: SingerDetail
+        component: resolve => (require(['views/Singer/SingerDetail'], resolve))
       }
     ]
   },
   {
     path: '/rank',
-    component: Rank,
+    component: resolve => (require(['views/Rank/Rank'], resolve)),
     children: [
       {
         path: ':id',
-        component: RankDetail
+        component: resolve => (require(['views/Rank/RankDetail'], resolve))
       }
     ]
   },
   {
     path: '/search',
-    component: Search,
+    component: resolve => (require(['views/Search/Search'], resolve)),
     children: [
       {
         path: 'singer/:id',
-        component: SingerDetail
+        component: resolve => (require(['views/Singer/SingerDetail'], resolve))
       },
       {
         path: 'list/:id',
-        component: MusicList
+        component: resolve => (require(['views/MusicList/MusicList'], resolve))
       }
     ]
   }

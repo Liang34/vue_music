@@ -1,3 +1,4 @@
+<!-- 在查无结果或者没有喜爱的歌时显示这个组件 -->
 <template>
   <div class="no-result">
     <div class="no-result-icon">

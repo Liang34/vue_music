@@ -1,3 +1,4 @@
+<!-- 基础组件, 用于显示列表-->
 <template>
   <scroll
   class="listview"
@@ -61,7 +62,6 @@ export default {
   },
   methods: {
     selectItem (item) {
-      console.log('"SSSSSSSSSSS"')
       this.$emit('select', item)
     },
     refresh () {

@@ -1,4 +1,4 @@
-<!--确认组件-->
+<!-- 确认组件:在用户清空播放列表或者删除搜索历史是弹框确认 -->
 <template>
   <transition name="confirm-fade">
     <div class="confirm" v-show="showFlag" @click.stop="hide">

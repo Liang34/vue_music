@@ -48,7 +48,7 @@
           </div>
           <div class="operators">
             <div class="icon i-left" >
-              <i class="iconfont icon-shunxubofang" :class="iconMode" @click="changeMode"></i>
+              <i class="iconfont" :class="iconMode" @click="changeMode"></i>
             </div>
             <div class="icon i-left" >
               <i class="iconfont icon-shangyishoushangyige" @click="prev"></i>
@@ -129,7 +129,7 @@ export default {
       if (this.mode === playMode.sequence) {
         return 'icon-shunxubofang'
       } else if (this.mode === playMode.loop) {
-        return 'iconfont icon-danquxunhuan'
+        return 'icon-danquxunhuan'
       } else {
         return 'icon-suijibofang'
       }
