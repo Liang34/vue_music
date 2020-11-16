@@ -7,3 +7,6 @@ export const reqRecommendList = limit => ajax('api/personalized', { limit })
 
 // 获取新歌
 export const getRecommendMusic = () => ajax('api/personalized/newsong')
+
+// 根据歌单id获取歌单详情
+export const getRecommendListDetail = id => ajax('api/playlist/detail', { id })

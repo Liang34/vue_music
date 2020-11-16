@@ -22,7 +22,7 @@
                 <img v-lazy="item.picUrl">
               </div>
               <p class="play-count">
-                <i class="fa fa-headphones"></i>
+                <i class="fa iconfont icon-erji"></i>
                 {{Math.floor(item.playCount / 10000) }}万
               </p>
               <div class="text">
@@ -45,6 +45,7 @@
         </div>
       </div>
     </scroll>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -53,7 +54,7 @@ import { createRecommendSong } from 'common/js/song'
 import { reqBanner, reqRecommendList, getRecommendMusic } from 'api/recommend'
 import Scroll from 'components/Scroll'
 import Slider from 'components/Slider'
-// import FourCircles from './FourCircles'
+import { mapMutations } from 'vuex'
 
 export default {
   data () {
@@ -84,11 +85,21 @@ export default {
       })
       list.splice(9)
       this.musicList = list
-    }
+    },
+    selectList (item) {
+      this.$router.push({
+        path: `/recommend/${item.id}`
+      })
+      this.setMuiscList(item)
+      console.log(item)
+    },
+    ...mapMutations({
+      setMuiscList: 'SET_MUSIC_LIST',
+      setFullScreen: 'SET_FULL_SCREEN'
+    })
   },
   components: {
     Slider,
-    // FourCircles,
     Scroll
   }
 }
@@ -107,6 +118,7 @@ export default {
     height: 100%;
     overflow: hidden;
     .slider-wrapper {
+      position: relative;
       width: 96%;
       margin: 0 auto;
       border-radius: 5px;

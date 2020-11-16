@@ -1,17 +1,17 @@
 <!-- 导航栏 -->
 <template>
   <div class="tab">
-    <router-link tag="div" class="tab-item" to="/my">
+    <!-- <router-link tag="div" class="tab-item" to="/my">
       <span>我的</span>
-    </router-link>
+    </router-link> -->
     <router-link tag="div" class="tab-item" to="/recommend">
       <span>发现</span>
     </router-link>
     <router-link tag="div" class="tab-item" to="/singer">
       <span>歌手</span>
     </router-link>
-    <router-link tag="div" class="tab-item" to="/video">
-      <span>视频</span>
+    <router-link tag="div" class="tab-item" to="/rank">
+      <span>排行榜</span>
     </router-link>
   </div>
 </template>

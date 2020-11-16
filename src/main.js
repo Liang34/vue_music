@@ -4,6 +4,7 @@ import router from './router'
 import 'common/style/index.less'
 import VueLazyLoad from 'vue-lazyload'
 import fastclick from 'fastclick'
+import store from './store'
 
 fastclick.attach(document.body)
 Vue.use(VueLazyLoad, {
@@ -13,5 +14,6 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')

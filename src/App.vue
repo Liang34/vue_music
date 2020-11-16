@@ -2,18 +2,23 @@
   <div id="app">
     <HeaderGuide></HeaderGuide>
     <Tab></Tab>
-    <router-view></router-view>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
+    <Play></Play>
   </div>
 </template>
 
 <script>
 import HeaderGuide from 'components/HeaderGuide'
 import Tab from 'components/Tab'
+import Play from 'views/Play/Play'
 
 export default {
   components: {
     HeaderGuide,
-    Tab
+    Tab,
+    Play
   }
 }
 </script>

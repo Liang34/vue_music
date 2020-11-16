@@ -14,7 +14,6 @@ export default class Song {
 function singerName (arr) {
   let name = []
   name = arr.map((item) => {
-    // console.log(arr)
     return item.name
   })
 
@@ -34,12 +33,15 @@ export function createRecommendSong (music) {
 
 export function createRecommendListSong (music) {
   return new Song({
+    // 歌曲id
     id: music.id,
-    singer: singerName(music.artists),
+    // 歌手名
+    singer: singerName(music.ar),
+    // 歌曲名
     name: music.name,
     // aliaName: music.song.alias.join('-'),
-    album: music.album.name,
-    image: music.album.picUrl
+    album: music.al.name,
+    image: music.al.picUrl
   })
 }
 
