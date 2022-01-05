@@ -25,3 +25,4 @@ setTimeout(() => {
 ```
 
 其他滚动无效的原因：https://blog.csdn.net/qiqi_77_/article/details/79361413 
+vu2--->vue3

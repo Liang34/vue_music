@@ -25,7 +25,7 @@ module.exports={
     proxy:{
       // 代理的
       '/api':{
-          target: 'http://localhost:3000', // 代理的基础路径
+          target: 'http://120.25.239.32:3000', // 代理的基础路径
           changeOrigin:true,
           pathRewrite:{
               '^/api':''
