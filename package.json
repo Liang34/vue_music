@@ -1,11 +1,12 @@
 {
-  "name": "vue_music1",
+  "name": "vue_music",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "prettier": "prettier --write ."
   },
   "dependencies": {
     "core-js": "^3.6.5",
@@ -29,6 +30,9 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^7.0.0",
     "prettier": "^2.2.1",
+    "sass": "^1.45.2",
+    "node-sass": "^6.0.0",
+    "sass-loader": "^7.3.1",
     "typescript": "~4.1.5"
   }
 }
