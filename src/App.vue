@@ -1,15 +1,24 @@
 <template>
   <div id="app">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <header-guide />
+    <tab />
   </div>
-  <router-view />
+  <!-- <router-view /> -->
 </template>
-
+<script>
+import HeaderGuide from 'components/HeaderGuide'
+import Tab from 'components/Tab'
+export default {
+  components: {
+    HeaderGuide,
+    Tab
+  }
+}
+</script>
 <style lang="scss" scope>
 #app {
   width: 100%;
   height: 100%;
-  background-color: #fff;
+  background-color: #fcfcfc;
 }
 </style>

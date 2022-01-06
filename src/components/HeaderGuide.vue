@@ -1,7 +1,7 @@
 <!-- 音乐头部 -->
 <template>
   <div class="m-header">
-    <h1 class="text">MusicCloud</h1>
+    <h1 class="text">柠檬鲸音乐</h1>
     <router-link to="/my" class="mine" tag="div">
       <i class="iconfont icon-liebiao"></i>
     </router-link>
@@ -16,9 +16,10 @@ export default {}
 </script>
 
 <style lang="scss" scoped>
+@import '@/common/style/variable.scss';
 .m-header {
   position: relative;
-  height: 44px;
+  height: 48px;
   width: 100%;
   text-align: center;
   background: $color-theme;
@@ -27,6 +28,7 @@ export default {}
     font-weight: bold;
     color: $color-text-l;
     letter-spacing: 3px;
+    font-size: $font-size-large-x;
   }
   .mine {
     position: absolute;
@@ -35,7 +37,8 @@ export default {}
     .iconfont {
       display: block;
       padding: 11px;
-      font-size: 22px;
+      font-size: 28px;
+      font-weight: bold;
       color: $color-theme-l;
     }
   }
