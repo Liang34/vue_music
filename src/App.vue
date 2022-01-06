@@ -3,7 +3,7 @@
     <header-guide />
     <tab />
   </div>
-  <!-- <router-view /> -->
+  <router-view />
 </template>
 <script>
 import HeaderGuide from 'components/HeaderGuide'
