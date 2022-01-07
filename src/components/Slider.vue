@@ -18,9 +18,11 @@
 
 <script lang="ts">
 import BScroll, { BScrollInstance } from '@better-scroll/core'
-import { onMounted, ref } from 'vue'
+import Slider from '@better-scroll/slide'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { addClass } from '@/common/js/dom'
-export default {
+BScroll.use(Slider)
+export default defineComponent({
   name: 'slider',
   props: {
     // 是否循环轮播
@@ -39,13 +41,31 @@ export default {
       default: 4000
     }
   },
-  setup(props: any) {
+  setup(props) {
     onMounted(() => {
       setTimeout(() => {
         setSliderWidth(undefined)
-        initSlider()
+        // initSlider()
+        const slider = new BScroll(sliderRef.value as HTMLElement, {
+          scrollX: true,
+          scrollY: false,
+          momentum: false,
+          snap: true,
+          snapLoop: props.loop,
+          snapThreshold: 0.3,
+          snapSpeed: 400,
+          slide: true
+        })
         if (props.autoPlay) {
-          play()
+          let pageIndex = currentPageIndex + 1
+          if (props.loop) {
+            pageIndex += 1
+          }
+          console.log(slider)
+          timer = setTimeout(() => {
+            slider.goToPage(pageIndex, 0, 400)
+            // slider.startPlay()
+          }, props.interval)
         }
       }, 20)
     })
@@ -56,41 +76,44 @@ export default {
     let timer: number | undefined = undefined
     // 初始化bs的配置
     const initSlider = () => {
-      slider = new BScroll(sliderRef.value as HTMLElement, {
-        scrollX: true,
-        scrollY: false,
-        momentum: false,
-        snap: true,
-        snapLoop: props.loop,
-        snapThreshold: 0.3,
-        snapSpeed: 400
-      })
-      // 触发时机：用户手指放在滚动区域的时候,停止自动播放
-      slider.on('beforeScrollStart', () => {
-        if (props.autoPlay) {
-          clearTimeout(timer)
-        }
-      })
-      // 触发时机：滚动结束，或者让一个正在滚动的 content 强制停止
-      slider.on('scrollEnd', () => {
-        let pageIndex = slider.getCurrentPage().pageX
-        if (props.loop) {
-          pageIndex -= 1
-        }
-        currentPageIndex = pageIndex
-        if (props.autoPlay) {
-          play()
-        }
-      })
+      // slider = new BScroll(sliderRef.value as HTMLElement, {
+      //   scrollX: true,
+      //   scrollY: false,
+      //   momentum: false,
+      //   snap: true,
+      //   snapLoop: props.loop,
+      //   snapThreshold: 0.3,
+      //   snapSpeed: 400,
+      //   slide: true
+      // })
+      // // 触发时机：用户手指放在滚动区域的时候,停止自动播放
+      // slider.on('beforeScrollStart', () => {
+      //   if (props.autoPlay) {
+      //     clearTimeout(timer)
+      //   }
+      // })
+      // // 触发时机：滚动结束，或者让一个正在滚动的 content 强制停止
+      // slider.on('scrollEnd', () => {
+      //   let pageIndex = slider.getCurrentPage().pageX
+      //   if (props.loop) {
+      //     pageIndex -= 1
+      //   }
+      //   currentPageIndex = pageIndex
+      //   if (props.autoPlay) {
+      //     play()
+      //   }
+      // })
     }
     const play = () => {
-      let pageIndex = currentPageIndex + 1
-      if (props.loop) {
-        pageIndex += 1
-      }
-      timer = setTimeout(() => {
-        slider.goToPage(pageIndex, 0, 400)
-      }, props.interval)
+      // let pageIndex = currentPageIndex + 1
+      // if (props.loop) {
+      //   pageIndex += 1
+      // }
+      // console.log(slider)
+      // timer = setTimeout(() => {
+      //   slider.goToPage(pageIndex, 0, 400)
+      //   // slider.startPlay()
+      // }, props.interval)
     }
     // 设置slider的宽度
     const setSliderWidth = (isResize: undefined | boolean) => {
@@ -98,6 +121,7 @@ export default {
       const children: Array<HTMLElement> = Array.from(
         (sliderGroupRef.value as HTMLElement).children
       ) as Array<HTMLElement>
+      console.log('j', children)
       let width = 0 // 总宽度
       // 父容器的宽度
       const sliderWidth = (sliderRef.value as HTMLElement)?.clientWidth
@@ -111,6 +135,7 @@ export default {
         width += 2 * sliderWidth
       }
       ;(sliderGroupRef.value as HTMLElement).style.width = `${width}px`
+      console.log('ll', (sliderGroupRef.value as HTMLElement).style.width)
     }
     return {
       initSlider,
@@ -120,7 +145,7 @@ export default {
       setSliderWidth
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

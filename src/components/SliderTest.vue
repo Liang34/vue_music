@@ -1,17 +1,23 @@
 <!-- 轮播图组件 -->
 <template>
-  <div class="slider" ref="sliderRef">
-    <div class="slider-group" ref="sliderGroupRef">
-      <slot> </slot>
+  <div class="slide-banner">
+    <div class="banner-wrapper">
+      <div class="slide-banner-wrapper" ref="slide">
+        <div class="slide-banner-content">
+          <div v-for="num in nums" class="slide-page" :class="'page' + num" :key="num">page {{num}}</div>
+        </div>
+      </div>
+      <div class="dots-wrapper">
+        <span
+          class="dot"
+          v-for="num in nums"
+          :key="num"
+          :class="{'active': currentPageIndex === (num - 1)}"></span>
+      </div>
     </div>
-    <!--轮播图小圆圈-->
-    <div class="dots">
-      <span
-        class="dot"
-        :class="{ active: currentPageIndex === index }"
-        v-for="(item, index) in dots"
-        :key="index"
-      ></span>
+    <div class="btn-wrap">
+      <button class="next" @click="nextPage">nextPage</button>
+      <button class="prev" @click="prePage">prePage</button>
     </div>
   </div>
 </template>
