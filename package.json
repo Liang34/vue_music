@@ -9,9 +9,8 @@
     "prettier": "prettier --write ."
   },
   "dependencies": {
-    "@better-scroll/core": "^2.4.2",
-    "@better-scroll/slide": "^2.4.2",
     "axios": "^0.24.0",
+    "better-scroll": "^2.4.2",
     "core-js": "^3.6.5",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
@@ -32,9 +31,9 @@
     "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^7.0.0",
+    "node-sass": "^6.0.0",
     "prettier": "^2.2.1",
     "sass": "^1.45.2",
-    "node-sass": "^6.0.0",
     "sass-loader": "^7.3.1",
     "typescript": "~4.1.5"
   }

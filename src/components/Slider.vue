@@ -17,11 +17,9 @@
 </template>
 
 <script lang="ts">
-import BScroll, { BScrollInstance } from '@better-scroll/core'
-import Slider from '@better-scroll/slide'
+import BScroll, { BScrollInstance } from 'better-scroll'
 import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { addClass } from '@/common/js/dom'
-BScroll.use(Slider)
 export default defineComponent({
   name: 'slider',
   props: {
@@ -44,7 +42,7 @@ export default defineComponent({
   setup(props) {
     onMounted(() => {
       setTimeout(() => {
-        setSliderWidth(undefined)
+        // setSliderWidth(undefined)
         // initSlider()
         const slider = new BScroll(sliderRef.value as HTMLElement, {
           scrollX: true,

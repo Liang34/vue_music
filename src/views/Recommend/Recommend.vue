@@ -22,6 +22,7 @@ export default defineComponent({
     async function getBanner() {
       const res = await reqBanner(2)
       state.banners = res.banners
+      // console.log(state.banners)
     }
     onMounted(() => {
       getBanner()
