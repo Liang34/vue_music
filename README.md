@@ -28,4 +28,4 @@ npm run lint
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
 1、引入 defineComponent() 以正确推断 setup() 组件的参数类型https://blog.csdn.net/qq_36157085/article/details/109498473
-2、refs的引用报错 
+2、refs 的引用报错

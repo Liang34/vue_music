@@ -1,35 +1,23 @@
 <template>
   <div>
-    <slider>
-      <div v-for="(item, index) in state.banners" :key="index">
-        <a :href="item.url">
-          <img :src="item.imageUrl" alt="banner" />
-        </a>
-      </div>
-    </slider>
+    <slider :sliders="sliders" v-if="sliders.length"></slider>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive } from 'vue'
-import Slider from '../../components/Slider.vue'
+import { defineComponent } from 'vue'
+import Slider from '../../components/base/slider.vue'
 import { reqBanner } from '../../api/recommend'
 export default defineComponent({
-  setup() {
-    let state = reactive({
-      banners: []
-    })
-    async function getBanner() {
-      const res = await reqBanner(2)
-      state.banners = res.banners
-      // console.log(state.banners)
-    }
-    onMounted(() => {
-      getBanner()
-    })
+  name: 'recommend',
+  data() {
     return {
-      state
+      sliders: []
     }
+  },
+  async created() {
+    const banner = await reqBanner(2)
+    this.sliders = banner.banners
   },
   components: {
     Slider

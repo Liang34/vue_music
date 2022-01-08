@@ -2,8 +2,8 @@
   <div id="app">
     <header-guide />
     <tab />
+    <router-view />
   </div>
-  <router-view />
 </template>
 <script>
 import HeaderGuide from 'components/HeaderGuide'
