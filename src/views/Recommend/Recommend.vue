@@ -7,17 +7,28 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Slider from '../../components/base/slider.vue'
-import { reqBanner } from '../../api/recommend'
+import { reqBanner, reqDiscList } from '../../api/recommend'
 export default defineComponent({
   name: 'recommend',
   data() {
     return {
-      sliders: []
+      sliders: [],
+      distList: []
     }
   },
-  async created() {
-    const banner = await reqBanner(2)
-    this.sliders = banner.banners
+  created() {
+    this.getBanners()
+    this.getDescList()
+  },
+  methods: {
+    async getBanners() {
+      const banner = await reqBanner(2)
+      this.sliders = banner.banners.slice(0, 10)
+    },
+    async getDescList() {
+      const distList = await reqDiscList(100)
+      this.distList = distList.result
+    }
   },
   components: {
     Slider

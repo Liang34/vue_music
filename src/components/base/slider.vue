@@ -3,7 +3,7 @@
     <div class="slider-group">
       <div class="slider-page" v-for="item in sliders" :key="item.id">
         <a :href="item.link">
-          <img :src="item.imageUrl" />
+          <img :src="item.pic" />
         </a>
       </div>
     </div>
@@ -33,10 +33,9 @@ export default defineComponent({
       }
     }
   },
-  setup(props) {
+  setup() {
     const rootRef = ref(null)
     const { currentPageIndex } = useSlider(rootRef)
-    console.log('o', props.sliders)
     return {
       rootRef,
       currentPageIndex
