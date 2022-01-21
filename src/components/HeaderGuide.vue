@@ -3,7 +3,7 @@
   <div class="m-header">
     <h1 class="text">Lemon-Whale</h1>
     <router-link to="/my" class="mine" tag="div">
-     <i class="iconfont icon-liebiao"></i>
+      <i class="iconfont icon-liebiao"></i>
     </router-link>
     <router-link to="/search" class="search" tag="div">
       <i class="iconfont icon-chazhao"></i>
@@ -11,17 +11,13 @@
   </div>
 </template>
 
-<script>
-export default {}
-</script>
-<style lang='scss' scoped>
-  @import "common/style/variable.scss";
-  .m-header {
-    position: relative;
-    height: 44px;
-    width: 100%;
-    text-align: center;
-    background: $color-theme;
+<style lang="scss" scoped>
+.m-header {
+  position: relative;
+  height: 44px;
+  width: 100%;
+  text-align: center;
+  background: $color-theme;
   .text {
     line-height: 44px;
     font-weight: bold;
@@ -33,10 +29,10 @@ export default {}
     top: -1.5px;
     left: 0;
     .iconfont {
-        display: block;
-        padding: 11px;
-        font-size: 22px;
-        color: $color-theme-l;
+      display: block;
+      padding: 11px;
+      font-size: 22px;
+      color: $color-theme-l;
     }
   }
   .search {
@@ -44,11 +40,11 @@ export default {}
     top: 0;
     right: 2px;
     .iconfont {
-        display: block;
-        padding: 12px;
-        font-size: 18px;
-        color: $color-theme-l;
-      }
+      display: block;
+      padding: 12px;
+      font-size: 18px;
+      color: $color-theme-l;
     }
   }
+}
 </style>
