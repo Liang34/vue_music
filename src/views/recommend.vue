@@ -1,7 +1,7 @@
 <!-- 推薦页面 -->
 <template>
   <div class="recommend">
-    rec
+    <Slider />
   </div>
   <!-- <div class="recommend" ref="recommend">
     <scroll class="recommend-content" ref="scroll" :data="discList">
@@ -56,7 +56,7 @@
 // import { reqBanner, reqRecommendList, getRecommendMusic } from 'api/recommend'
 import { reqBanner } from 'service/recommend'
 // import Scroll from 'components/Scroll'
-// import Slider from '@/components/base/slider/slider'
+import Slider from 'components/base/slider/slider'
 // import { mapMutations, mapActions } from 'vuex'
 
 export default {
@@ -70,7 +70,7 @@ export default {
     this.sliders = result
   },
   components: {
-    // Slider
+    Slider
     // Scroll
   }
 }
