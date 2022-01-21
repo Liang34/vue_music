@@ -11,7 +11,12 @@
   </div>
 </template>
 
+<script>
+export default {}
+</script>
+
 <style lang="scss" scoped>
+/* @import '@/common/style/variable.scss;'; */
 .m-header {
   position: relative;
   height: 44px;

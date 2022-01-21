@@ -1,15 +1,23 @@
 <template>
-  <HeaderGuide />
-  <router-view />
+  <div id="app">
+    <header-guide />
+    <router-view />
+  </div>
 </template>
 
 <script>
 import HeaderGuide from '@/components/HeaderGuide'
 export default {
-  component: {
+  components: {
     HeaderGuide
   }
 }
 </script>
 
-<style></style>
+<style lang="scss" scope>
+#app {
+  width: 100%;
+  height: 100%;
+  background-color: #fcfcfc;
+}
+</style>
