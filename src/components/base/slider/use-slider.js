@@ -5,10 +5,10 @@ import { onActivated, onDeactivated, onMounted, onUnmounted, ref } from 'vue'
 
 BScroll.use(Slide)
 export default function useSlider (wrapperRef) {
-  const slider = ref(null)
+  const slider = ref()
   const currentPageIndex = ref(0)
   onMounted(() => {
-    const sliderVal = slider.value = new BScroll(wrapperRef.value, {
+    slider.value = new BScroll(wrapperRef.value, {
       click: true,
       scrollX: true,
       scrollY: false,
@@ -17,20 +17,21 @@ export default function useSlider (wrapperRef) {
       probeType: 2,
       slide: true
     })
+    const sliderVal = slider.value
     sliderVal.on('slideWillChange', (page) => {
       currentPageIndex.value = page.pageX
     })
-    // 销毁组件
-    onUnmounted(() => {
-      slider.value.destory()
-    })
-    onActivated(() => {
-      slider.value.enable()
-      slider.value.refresh()
-    })
-    onDeactivated(() => {
-      slider.value.disable()
-    })
+  })
+  // 销毁组件
+  onUnmounted(() => {
+    slider.value.destory()
+  })
+  onActivated(() => {
+    slider.value.enable()
+    slider.value.refresh()
+  })
+  onDeactivated(() => {
+    slider.value.disable()
   })
   return {
     slider,
