@@ -24,7 +24,7 @@ export default function useSlider (wrapperRef) {
   })
   // 销毁组件
   onUnmounted(() => {
-    slider.value.destory()
+    slider.value.destroy()
   })
   onActivated(() => {
     slider.value.enable()

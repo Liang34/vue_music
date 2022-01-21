@@ -70,13 +70,13 @@ export default {
     }
   }
   .dots-wrapper {
+    display: flex;
     position: absolute;
     left: 50%;
     bottom: 12px;
     line-height: 12px;
     transform: translateX(-50%);
     .dot {
-      display: inline-block;
       margin: 0 4px;
       width: 8px;
       height: 8px;
