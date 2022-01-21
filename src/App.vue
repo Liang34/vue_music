@@ -1,24 +1,26 @@
 <template>
-  <div id="app">
-    <header-guide />
-    <tab />
-    <router-view />
-  </div>
+  <img alt="Vue logo" src="./assets/logo.png">
+  <HelloWorld msg="Welcome to Your Vue.js App"/>
 </template>
+
 <script>
-import HeaderGuide from 'components/HeaderGuide'
-import Tab from 'components/Tab'
+import HelloWorld from './components/HelloWorld.vue'
+
 export default {
+  name: 'App',
   components: {
-    HeaderGuide,
-    Tab
+    HelloWorld
   }
 }
 </script>
-<style lang="scss" scope>
+
+<style>
 #app {
-  width: 100%;
-  height: 100%;
-  background-color: #fcfcfc;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
 </style>
