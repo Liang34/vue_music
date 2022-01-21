@@ -1,15 +1,18 @@
 <template>
   <div id="app">
     <header-guide />
+    <tab />
     <router-view />
   </div>
 </template>
 
 <script>
 import HeaderGuide from '@/components/HeaderGuide'
+import Tab from '@/components/Tab'
 export default {
   components: {
-    HeaderGuide
+    HeaderGuide,
+    Tab
   }
 }
 </script>

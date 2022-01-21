@@ -1,1 +1,4 @@
 vue3重写vue2项目
+项目特点：
+使用compositionApi
+多处使用Hook实现一些逻辑
