@@ -1,10 +1,13 @@
 <template>
   <div class="slider" ref="rootRef">
-    111111111111111
-    <!-- <div class="slider-group">
-      <div class="slider-page" v-for="item in sliders" :key="item.id">
-        <a :href="item.link">
-          <img :src="item.pic" />
+    <div class="slider-group">
+      <div
+        class="slider-page"
+        v-for="item in sliders"
+        :key="item.id"
+      >
+        <a>
+          <img :src="item.pic"/>
         </a>
       </div>
     </div>
@@ -13,35 +16,34 @@
         class="dot"
         v-for="(item, index) in sliders"
         :key="item.id"
-        :class="{ active: currentPageIndex === index }"
-      >
+        :class="{'active': currentPageIndex === index}">
       </span>
-    </div> -->
+    </div>
   </div>
 </template>
 
 <script>
-// import { ref } from ''
-// import useSlider from './use-slider'
+import { ref } from 'vue'
+import useSlider from './use-slider'
 
 export default {
-  // name: 'slider',
-  // props: {
-  //   sliders: {
-  //     type: Array,
-  //     default () {
-  //       return []
-  //     }
-  //   }
-  // },
-  // setup () {
-  //   const rootRef = ref()
-  //   const { currentPageIndex } = useSlider(rootRef)
-  //   return {
-  //     rootRef,
-  //     currentPageIndex
-  //   }
-  // }
+  name: 'slider',
+  props: {
+    sliders: {
+      type: Array,
+      default () {
+        return []
+      }
+    }
+  },
+  setup () {
+    const rootRef = ref()
+    const { currentPageIndex } = useSlider(rootRef)
+    return {
+      rootRef,
+      currentPageIndex
+    }
+  }
 }
 </script>
 
