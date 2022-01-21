@@ -17,11 +17,11 @@
   height: 44px;
   width: 100%;
   text-align: center;
-  background: $color-theme;
+  /* background: $color-theme; */
   .text {
     line-height: 44px;
     font-weight: bold;
-    color: $color-text-l;
+    /* color: $color-text-l; */
     letter-spacing: 3px;
   }
   .mine {
@@ -32,7 +32,7 @@
       display: block;
       padding: 11px;
       font-size: 22px;
-      color: $color-theme-l;
+      /* color: $color-theme-l; */
     }
   }
   .search {
@@ -43,7 +43,7 @@
       display: block;
       padding: 12px;
       font-size: 18px;
-      color: $color-theme-l;
+      /* color: $color-theme-l; */
     }
   }
 }

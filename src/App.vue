@@ -1,8 +1,6 @@
 <template>
-  <div id="nav">
-    <HeaderGuide />
-  </div>
-  <router-view/>
+  <HeaderGuide />
+  <router-view />
 </template>
 
 <script>
@@ -14,5 +12,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>
