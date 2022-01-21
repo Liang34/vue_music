@@ -54,58 +54,21 @@
 <script>
 // import { createRecommendSong } from 'common/js/song'
 // import { reqBanner, reqRecommendList, getRecommendMusic } from 'api/recommend'
+import { reqBanner } from 'service/recommend'
 // import Scroll from 'components/Scroll'
 // import Slider from '@/components/base/slider/slider'
 // import { mapMutations, mapActions } from 'vuex'
 
 export default {
-  // data () {
-  //   return {
-  //     banners: [],
-  //     discList: [],
-  //     musicList: []
-  //   }
-  // },
-  // created () {
-  //   this.getBanner()
-  //   this.getDiscList()
-  //   this.getMusicList()
-  // },
-  // methods: {
-  //   async getBanner () {
-  //     const banners = await reqBanner(2)
-  //     this.banners = banners.banners
-  //   },
-  //   async getDiscList () {
-  //     const discList = await reqRecommendList(30)
-  //     this.discList = discList.result
-  //   },
-  //   async getMusicList () {
-  //     const musicList = await getRecommendMusic()
-  //     const list = musicList.result.map(item => {
-  //       return createRecommendSong(item)
-  //     })
-  //     list.splice(9)
-  //     this.musicList = list
-  //   },
-  //   selectList (item) {
-  //     this.$router.push({
-  //       path: `/recommend/${item.id}`
-  //     })
-  //     this.setMuiscList(item)
-  //     console.log(item)
-  //   },
-  //   ...mapMutations({
-  //     setMuiscList: 'SET_MUSIC_LIST',
-  //     setFullScreen: 'SET_FULL_SCREEN'
-  //   }),
-  //   selectSong (item) {
-  //     this.insertSong(item)
-  //   },
-  //   ...mapActions([
-  //     'insertSong'
-  //   ])
-  // },
+  data () {
+    return {
+      sliders: []
+    }
+  },
+  async created () {
+    const result = await reqBanner()
+    this.sliders = result
+  },
   components: {
     // Slider
     // Scroll

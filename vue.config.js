@@ -10,7 +10,7 @@ module.exports = {
       .set('views', resolve('./src/views'))
       .set('assets', resolve('./src/assets'))
       .set('common', resolve('./src/common'))
-      .set('api', resolve('./src/api'))
+      .set('service', resolve('./src/service'))
     // set第一个参数：设置的别名，第二个参数：设置的路径
     // 使用CDN加速
     // config.set('externals', {
@@ -25,7 +25,7 @@ module.exports = {
     proxy: {
       // 代理的
       '/api': {
-        target: 'http://localhost:3000', // 代理的基础路径
+        target: 'http://120.25.239.32:3000', // 代理的基础路径
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
