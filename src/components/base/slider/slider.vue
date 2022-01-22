@@ -20,20 +20,20 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { ref } from 'vue'
 import useSlider from './use-slider'
 
-export default defineComponent({
+export default {
   name: 'slider',
   props: {
     sliders: {
       type: Array,
-      default() {
+      default () {
         return []
       }
     }
   },
-  setup() {
+  setup () {
     const rootRef = ref(null)
     const { currentPageIndex } = useSlider(rootRef)
     return {
@@ -41,7 +41,7 @@ export default defineComponent({
       currentPageIndex
     }
   }
-})
+}
 </script>
 
 <style lang="scss" scoped>
@@ -70,13 +70,13 @@ export default defineComponent({
     }
   }
   .dots-wrapper {
+    display: flex;
     position: absolute;
     left: 50%;
     bottom: 12px;
     line-height: 12px;
     transform: translateX(-50%);
     .dot {
-      display: inline-block;
       margin: 0 4px;
       width: 8px;
       height: 8px;

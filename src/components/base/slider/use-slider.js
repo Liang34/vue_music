@@ -1,15 +1,12 @@
-import BScroll, { BScrollInstance } from '@better-scroll/core'
+import BScroll from '@better-scroll/core'
 import Slide from '@better-scroll/slide'
 
-import { onMounted, onUnmounted, onActivated, onDeactivated, ref } from 'vue'
+import { onActivated, onDeactivated, onMounted, onUnmounted, ref } from 'vue'
 
 BScroll.use(Slide)
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function useSlider(wrapperRef: { value: string | HTMLElement }) {
-  const slider = ref<BScrollInstance>()
+export default function useSlider (wrapperRef) {
+  const slider = ref()
   const currentPageIndex = ref(0)
-
   onMounted(() => {
     slider.value = new BScroll(wrapperRef.value, {
       click: true,
@@ -21,25 +18,21 @@ export default function useSlider(wrapperRef: { value: string | HTMLElement }) {
       slide: true
     })
     const sliderVal = slider.value
-
-    sliderVal.on('slideWillChange', (page: { pageX: number }) => {
+    sliderVal.on('slideWillChange', (page) => {
       currentPageIndex.value = page.pageX
     })
   })
-
+  // 销毁组件
   onUnmounted(() => {
-    slider.value?.destroy()
+    slider.value.destroy()
   })
-
   onActivated(() => {
-    slider.value?.enable()
-    slider.value?.refresh()
+    slider.value.enable()
+    slider.value.refresh()
   })
-
   onDeactivated(() => {
-    slider.value?.disable()
+    slider.value.disable()
   })
-
   return {
     slider,
     currentPageIndex

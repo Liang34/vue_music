@@ -5,9 +5,10 @@
     <router-view />
   </div>
 </template>
+
 <script>
-import HeaderGuide from 'components/HeaderGuide'
-import Tab from 'components/Tab'
+import HeaderGuide from '@/components/HeaderGuide'
+import Tab from '@/components/Tab'
 export default {
   components: {
     HeaderGuide,
@@ -15,6 +16,7 @@ export default {
   }
 }
 </script>
+
 <style lang="scss" scope>
 #app {
   width: 100%;

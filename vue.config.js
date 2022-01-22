@@ -1,7 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require('path') //引入path模块
-function resolve(dir) {
-  return path.join(__dirname, dir) //path.join(__dirname)设置绝对路径
+const path = require('path') // 引入path模块
+function resolve (dir) {
+  return path.join(__dirname, dir) // path.join(__dirname)设置绝对路径
 }
 module.exports = {
   chainWebpack: (config) => {
@@ -11,7 +10,16 @@ module.exports = {
       .set('views', resolve('./src/views'))
       .set('assets', resolve('./src/assets'))
       .set('common', resolve('./src/common'))
-      .set('api', resolve('./src/api'))
+      .set('service', resolve('./src/service'))
+    // set第一个参数：设置的别名，第二个参数：设置的路径
+    // 使用CDN加速
+    // config.set('externals', {
+    //   vue: 'Vue',
+    //   'vue-router': 'VueRouter',
+    //   axios: 'axios',
+    //   'vue-lazyload':'vue-lazyload',
+    //   'fastclick': 'fastclick',
+    // })
   },
   devServer: {
     proxy: {
