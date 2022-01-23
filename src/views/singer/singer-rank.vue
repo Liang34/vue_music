@@ -1,6 +1,6 @@
 <template>
   <div class="singer" ref="singer">
-    <list-view :data="this.singers" @select="selectSinger" ref="list"></list-view>
+    <list-view :data="this.singers"></list-view>
     <!-- <router-view></router-view> -->
   </div>
 </template>
@@ -8,6 +8,7 @@
 <script>
 import { getSingers } from 'service/singer'
 import Singer from 'common/js/singer'
+import listView from 'components/list-view/list-view'
 const pinyin = require('pinyin')
 
 const HOT_NAME = '热门'
@@ -32,7 +33,7 @@ export default {
         })
         item.initial = py[0][0].toUpperCase()
       })
-      console.log(s)
+      // console.log(s)
       this.singers = this._normalizeSinger(s)
     },
     _normalizeSinger (list) {
@@ -46,7 +47,7 @@ export default {
         if (index < HOT_SINGERS) {
           map.hot.items.push(new Singer({
             id: item.id,
-            name: item.id,
+            name: item.name,
             avatar: item.img1v1Url,
             aliaName: item.alias.join('/')
           }))
@@ -81,10 +82,18 @@ export default {
       })
       return hot.concat(ret)
     }
+  },
+  components: {
+    listView
   }
 }
 </script>
 
 <style lang="scss" scope>
-
+  .singer {
+    position: fixed;
+    width: 100%;
+    top: 88px;
+    bottom: 0;
+  }
 </style>
