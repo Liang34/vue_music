@@ -36,7 +36,8 @@
 </template>
 
 <script>
-import Scroll from '@/components/wrap-scroll/index'
+// import Scroll from '@/components/wrap-scroll/index'
+import Scroll from '@/components/base/scroll/scroll'
 import useFixed from './use-fixed'
 import useShortcut from './use-shortcut'
 
@@ -88,7 +89,6 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: $color-background;
   .group {
     padding-bottom: 30px;
     .title {
@@ -96,7 +96,8 @@ export default {
       line-height: 30px;
       padding-left: 20px;
       font-size: $font-size-small;
-      color: $color-text-l;
+      color: #fcfcfc;
+      font-weight: 700;
       background: $color-highlight-background;
     }
     .item {
@@ -125,7 +126,8 @@ export default {
       line-height: 30px;
       padding-left: 20px;
       font-size: $font-size-small;
-      color: $color-text-l;
+       color: #fcfcfc;
+      font-weight: 700;
       background: $color-highlight-background;
     }
   }
