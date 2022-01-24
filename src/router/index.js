@@ -15,7 +15,11 @@ const routes = [
   },
   {
     path: '/singer',
-    component: () => import(/**/ '../views/singer/singer-rank.vue')
+    component: () => import(/* webpackChunkName: "singer" */ '../views/singer/singer-rank.vue')
+  },
+  {
+    path: '/my',
+    component: () => import(/* webpackChunkName: "my" */ '../views/my/my.vue')
   }
 ]
 
