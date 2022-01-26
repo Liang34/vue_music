@@ -3,11 +3,13 @@
     <div class="search-input-wrapper">
       <search-box v-model="query"></search-box>
     </div>
-    <!-- <scroll
+    <scroll
       ref="scrollRef"
       class="search-content"
       v-show="!query"
     >
+    </scroll>
+    <!--
       <div>
         <div class="hot-keys">
           <h1 class="title">热门搜索</h1>
@@ -62,6 +64,7 @@
 <script>
 import { ref } from 'vue'
 import SearchBox from 'components/search/search-box'
+import Scroll from 'components/base/scroll/scroll'
 export default {
   setup () {
     const query = ref('')
@@ -70,7 +73,8 @@ export default {
     }
   },
   components: {
-    SearchBox
+    SearchBox,
+    Scroll
   }
 }
 </script>
