@@ -26,7 +26,7 @@ function insertArray (arr, val, compare, maxLen) {
     arr.pop()
   }
 }
-
+// 保存搜索记录
 export function saveSearch (query) {
   const searches = storage.get(SEARCH_KEY, [])
   insertArray(searches, query, (item) => {
@@ -35,7 +35,7 @@ export function saveSearch (query) {
   storage.set(SEARCH_KEY, searches)
   return searches
 }
-
+// 记载搜索记录
 export function loadSearch () {
   return storage.get(SEARCH_KEY, [])
 }
@@ -46,7 +46,7 @@ function deleteFromArray (arr, compare) {
     arr.splice(index, 1)
   }
 }
-
+// 删除某个搜索记录
 export function deleteSearch (query) {
   // 首先获取
   const searches = storage.get(SEARCH_KEY, [])
@@ -59,7 +59,7 @@ export function deleteSearch (query) {
   storage.set(SEARCH_KEY, searches)
   return searches
 }
-
+// 清理search
 export function clearSearch () {
   storage.remove(SEARCH_KEY)
   return []
