@@ -1,11 +1,11 @@
 <template>
   <transition name="search">
     <div class="search">
-      <div class="search-input-wrapper">
-        <i class="fa iconfont icon-fanhui" @click="back"></i>
+      <div class="search-box-wrapper">
+        <i class="iconfont icon-fanhui fa" @click="back"></i>
         <search-box v-model="query" @query="onQueryChange" ></search-box>
       </div>
-    <scroll ref="scrollRef" class="search-content">
+      <scroll ref="scrollRef" class="search-scroll-wrapper">
       <div>
         <div class="search-hots" v-show="!query">
           <p class="title">热门搜索</p>
@@ -13,36 +13,34 @@
             {{item.first}}
           </span>
         </div>
-        <div class="search-history" v-show="searchHistory.length">
+        <div class="shortcut-wrapper">
+          <div class="search-history" v-show="searchHistory.length">
           <h1 class="title">
             <span class="text">搜索历史</span>
             <span class="clear" @click="showConfirm">
               <i class="iconfont icon-clear"></i>
             </span>
           </h1>
-          <confirm
-            ref="confirmRef"
-            text="是否清空所有搜索历史"
-            confirm-btn-text="清空"
-            @confirm="clearSearch"
-          >
-          </confirm>
           <search-list
             :searches="searchHistory"
             @select="addQuery"
             @delete="deleteSearch"
           ></search-list>
         </div>
+        </div>
+        <div class="search-result">
+          <suggest @select="saveSearch" @refresh="refresh" :query="query" ref="suggest"></suggest>
+        </div>
       </div>
-    </scroll>
+      <confirm
+         ref="confirmRef"
+         text="是否清空所有搜索历史"
+         confirm-btn-text="清空"
+         @confirm="clearSearch"
+       >
+       </confirm>
+      </scroll>
     </div>
-    <!-- <div class="search-result" v-show="query">
-      <suggest
-        :query="query"
-        @select-song="selectSong"
-        @select-singer="selectSinger"
-      ></suggest>
-    </div> -->
     <!-- <router-view v-slot="{ Component }">
       <transition appear name="slide">
         <component :is="Component" :data="selectedSinger"/>
@@ -59,6 +57,8 @@ import { getSearchHot } from 'service/search'
 import Confirm from 'components/base/confirm/confirm'
 import { useStore } from 'vuex'
 import SearchList from 'components/search/search-list'
+import Suggest from 'components/search/suggest'
+import useSearchHistory from 'components/search/use-search-history'
 export default {
   setup () {
     const query = ref('')
@@ -68,22 +68,35 @@ export default {
     const onQueryChange = (query) => {
       query.value = query
     }
+    const { save, deleteSearch, remove } = useSearchHistory()
     getSearchHot().then(res => {
-      console.log(res)
       hots.value = res.result.hots
     })
+    const addQuery = (s) => {
+      // query.value = 'ss3333'
+      query.value = s
+    }
+    const saveSearch = () => {
+      save()
+    }
     return {
       query,
       hots,
+      saveSearch,
       searchHistory,
-      onQueryChange
+      onQueryChange,
+      addQuery,
+      save,
+      deleteSearch,
+      remove
     }
   },
   components: {
     SearchBox,
     Scroll,
     Confirm,
-    SearchList
+    SearchList,
+    Suggest
   }
 }
 </script>

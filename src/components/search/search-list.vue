@@ -58,7 +58,7 @@ export default {
       overflow: hidden;
       .text {
         flex: 1;
-        color: $color-text-l;
+        color: $color-text;
       }
       .icon {
         @include extend-click();

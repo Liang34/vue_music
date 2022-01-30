@@ -8,7 +8,7 @@ export default function useSearchHistory () {
   function save (query) {
     store.dispatch('saveSearchHistory', query)
   }
-  function deleteS (query) {
+  function deleteSearch (query) {
     store.dispatch('deleteSearchHistory', query)
   }
 
@@ -17,7 +17,7 @@ export default function useSearchHistory () {
   }
   return {
     save,
-    deleteS,
+    deleteSearch,
     remove
   }
 }
