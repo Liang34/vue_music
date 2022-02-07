@@ -7,15 +7,15 @@
         <img :src="suggest.artists[0].img1v1Url" width="50" height="50">
         <span>歌手：{{suggest.artists[0].name}}</span>
       </div>
-      <!-- <div @click="selectList(suggest.playlists[0])" class="search-suggest-item" v-if="suggest.playlists && showList">
+      <div @click="selectList(suggest.playlists[0])" class="search-suggest-item" v-if="suggest.playlists && showList">
         <img :src="suggest.playlists[0].coverImgUrl" width="50" height="50">
         <div class="text">
           <p>歌单：{{suggest.playlists[0].name}}</p>
           <p class="singer">{{suggest.albums[0].artist.name}}</p>
         </div>
-      </div> -->
+      </div>
     </div>
-    <!-- <ul class="suggest-list" ref="suggestList" v-show="!searchShow">
+    <ul class="suggest-list" ref="suggestList" v-show="!searchShow">
       <li @click="selectSong(item)" class="suggest-item" v-for="(item, index) in songs" :key="index">
         <div class="icon">
           <i></i>
@@ -29,12 +29,13 @@
     </ul>
     <div v-show="!haveMore && !songs.length && query" class="no-result-wrapper">
       抱歉，暂无搜索结果
-    </div> -->
+    </div>
   </div>
 </template>
 <script>
 import { ref, watch } from 'vue'
-import { getSearchSongs } from 'service/search'
+import { getSearchSongs, getSearchSuggest } from 'service/search'
+import { createSearchSong } from 'common/js/song'
 export default {
   name: 'suggest',
   props: {
@@ -53,7 +54,7 @@ export default {
     const suggest = ref({})
     const songs = ref([])
     const hasMore = ref(true)
-    const page = ref(1) // 当前页数
+    const page = ref(0) // 当前页数
     const loadingText = ref('')
     const noResultText = ref('抱歉，暂无搜索结果')
     const searchShow = ref(true)
@@ -65,23 +66,35 @@ export default {
         hasMore.value = false
         return
       }
-      await searchFirst()
+      suggest.value = {}
+      songs.value = []
+      searchShow.value = true
+      page.value = 0
+      hasMore.value = true
+      search()
     })
-    async function searchFirst () {
+    async function search () {
       searchShow.value = false
       hasMore.value = true
-      const result = await getSearchSongs(props.query, page.value)
-      page.value = 1
-      songs.value = []
-      singer.value = null
-      hasMore.value = true
-
-      console.log(result)
-      // songs.value = await processSongs(result.songs)
-      singer.value = result.singer
-      hasMore.value = result.hasMore
-      // await nextTick()
-      // await makeItScrollable()
+      const res = await getSearchSongs(props.query, page.value)
+      if (!res.result.songs) {
+        hasMore.value = false
+        return
+      }
+      const list = res.result.songs
+      const ret = []
+      list.forEach((item) => {
+        ret.push(createSearchSong(item))
+      })
+      songs.value = ret
+      console.log(songs.value)
+      emit('refresh')
+      page.value += 30
+      const resSearch = await getSearchSuggest(props.query)
+      suggest.value = resSearch.result
+    }
+    const selectSong = () => {
+      emit('select')
     }
     return {
       singer,
@@ -89,11 +102,11 @@ export default {
       loadingText,
       noResultText,
       suggest,
-      searchShow
+      searchShow,
       // loading,
       // noResult,
       // pullUpLoading,
-      // selectSong,
+      selectSong
       // selectSinger,
     }
   }

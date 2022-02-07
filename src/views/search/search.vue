@@ -3,7 +3,7 @@
     <div class="search">
       <div class="search-box-wrapper">
         <i class="iconfont icon-fanhui fa" @click="back"></i>
-        <search-box v-model="query" @query="onQueryChange" ></search-box>
+        <search-box @query="onQueryChange" ref="searchBox"></search-box>
       </div>
       <scroll ref="scrollRef" class="search-scroll-wrapper">
       <div>
@@ -13,7 +13,7 @@
             {{item.first}}
           </span>
         </div>
-        <div class="shortcut-wrapper">
+        <div class="shortcut-wrapper" v-show="!query">
           <div class="search-history" v-show="searchHistory.length">
           <h1 class="title">
             <span class="text">搜索历史</span>
@@ -59,25 +59,31 @@ import { useStore } from 'vuex'
 import SearchList from 'components/search/search-list'
 import Suggest from 'components/search/suggest'
 import useSearchHistory from 'components/search/use-search-history'
+import { useRouter } from 'vue-router'
 export default {
   setup () {
     const query = ref('')
     const hots = ref([])
+    const searchBox = ref()
     const store = useStore()
+    const router = useRouter()
     const searchHistory = computed(() => store.state.searchHistory)
-    const onQueryChange = (query) => {
-      query.value = query
+    const onQueryChange = (s) => {
+      query.value = s
     }
     const { save, deleteSearch, remove } = useSearchHistory()
     getSearchHot().then(res => {
       hots.value = res.result.hots
     })
     const addQuery = (s) => {
-      // query.value = 'ss3333'
-      query.value = s
+      searchBox.value.setQuery(s)
     }
     const saveSearch = () => {
-      save()
+      save(query.value)
+    }
+    const back = () => {
+      router.back()
+      searchBox.value.clear()
     }
     return {
       query,
@@ -88,7 +94,9 @@ export default {
       addQuery,
       save,
       deleteSearch,
-      remove
+      remove,
+      searchBox,
+      back
     }
   },
   components: {
