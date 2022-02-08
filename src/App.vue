@@ -3,16 +3,19 @@
     <header-guide />
     <tab />
     <router-view />
+    <play />
   </div>
 </template>
 
 <script>
 import HeaderGuide from '@/components/HeaderGuide'
 import Tab from '@/components/Tab'
+import Play from '@/views/play/play'
 export default {
   components: {
     HeaderGuide,
-    Tab
+    Tab,
+    Play
   }
 }
 </script>

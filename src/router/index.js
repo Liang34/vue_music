@@ -27,7 +27,11 @@ const routes = [
   },
   {
     path: '/rank',
-    component: () => import(/* webpackChunkName: "rank" */ '../views/rank/rank.vue')
+    component: () => import(/* webpackChunkName: "rank" */ '../views/rank/rank.vue'),
+    children: [{
+      path: ':id',
+      component: () => import(/* webpackChunkName: "rank-detail" */ '../views/rank/rank-detail.vue')
+    }]
   }
 ]
 

@@ -25,16 +25,20 @@
 <script>
 import { getTop } from 'service/rank'
 import { onMounted, ref } from 'vue'
-// import Scroll from 'components/Scroll'
-// import Loading from 'components/loading/loading'
+import { useRouter } from 'vue-router'
+import Scroll from 'components/base/scroll/scroll'
+import Loading from 'components/base/loading/loading'
 // import { playlistMixin } from 'common/js/mixin'
-// import { mapMutations } from 'vuex'
+import { useStore } from 'vuex'
 
-const YUNMUSIC_TOP = [0, 1, 2, 3, 4, 22, 23]
+const YUNMUSIC_TOP = [0, 1, 2, 3, 4, 22, 23]// 榜单名
 
 export default {
   setup () {
     const yunTopList = ref([]) // 排行榜列表
+    const showLoading = ref(true)
+    const router = useRouter()
+    const store = useStore()
     const getTopList = async () => {
       for (let i = 0; i < YUNMUSIC_TOP.length; i++) {
         const res = await getTop(YUNMUSIC_TOP[i])
@@ -43,7 +47,7 @@ export default {
           list.top = res.playlist.tracks.slice(0, 3)
           yunTopList.value.push(list)
           if (i === YUNMUSIC_TOP.length - 1) {
-            // this.showLoading = false
+            showLoading.value = false
           }
         }
       }
@@ -51,53 +55,30 @@ export default {
     onMounted(() => {
       getTopList()
     })
-    return {
-      yunTopList
+    const selectItem = (item) => {
+      console.log(item)
+      router.push({
+        path: `/rank/${item.id}`
+      })
+      store.commit('SET_TOP_LIST', item)
     }
-  }
-  // data () {
-  //   return {
-  //     yunTopList: [],
-  //     showLoading: true
-  //   }
-  // },
-  // created () {
-  //   this._getTopList()
-  // },
+    return {
+      yunTopList,
+      showLoading,
+      selectItem
+    }
+  },
   // methods: {
-  //   selectItem (item) {
-  //     this.$router.push({
-  //       path: `/rank/${item.id}`
-  //     })
-  //     this.setTopList(item)
-  //   },
   //   handlePlaylist (playlist) {
   //     const bottom = playlist.length > 0 ? '60px' : ''
   //     this.$refs.rank.style.bottom = bottom
   //     this.$refs.scroll.refresh()
   //   },
-  //   async _getTopList () {
-  //     for (let i = 0; i < YUNMUSIC_TOP.length; i++) {
-  //       const res = await getTop(YUNMUSIC_TOP[i])
-  //       // console.log(res)
-  //       if (res.code === 200) {
-  //         const list = res.playlist
-  //         list.top = res.playlist.tracks.slice(0, 3)
-  //         this.yunTopList.push(list)
-  //         if (i === YUNMUSIC_TOP.length - 1) {
-  //           this.showLoading = false
-  //         }
-  //       }
-  //     }
-  //   },
-  //   ...mapMutations({
-  //     setTopList: 'SET_TOP_LIST'
-  //   })
   // },
-  // components: {
-  //   Scroll,
-  //   Loading
-  // }
+  components: {
+    Scroll,
+    Loading
+  }
 }
 </script>
 
