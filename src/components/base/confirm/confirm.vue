@@ -103,7 +103,7 @@ export default {
           line-height: 22px;
           text-align: center;
           font-size: $font-size-large;
-          color: $color-text-l;
+          color: $color-text;
         }
         .operate {
           display: flex;
@@ -115,7 +115,7 @@ export default {
             line-height: 22px;
             padding: 10px 0;
             border-top: 1px solid $color-background-d;
-            color: $color-text-l;
+            color: #fcfcfc;
             &.left {
               border-right: 1px solid $color-background-d;
               color: $color-text;

@@ -29,7 +29,7 @@
         </div>
         </div>
         <div class="search-result">
-          <suggest @select="saveSearch" @refresh="refresh" :query="query" ref="suggest"></suggest>
+          <suggest @select="saveSearch" :query="query" ref="suggest"></suggest>
         </div>
       </div>
       <confirm
@@ -41,11 +41,6 @@
        </confirm>
       </scroll>
     </div>
-    <!-- <router-view v-slot="{ Component }">
-      <transition appear name="slide">
-        <component :is="Component" :data="selectedSinger"/>
-      </transition>
-    </router-view> -->
   </transition>
 </template>
 
@@ -67,6 +62,7 @@ export default {
     const searchBox = ref()
     const store = useStore()
     const router = useRouter()
+    const confirmRef = ref()
     const searchHistory = computed(() => store.state.searchHistory)
     const onQueryChange = (s) => {
       query.value = s
@@ -85,18 +81,26 @@ export default {
       router.back()
       searchBox.value.clear()
     }
+    const clearSearch = () => {
+      remove()
+    }
+    const showConfirm = () => {
+      confirmRef.value.show()
+    }
     return {
       query,
       hots,
+      showConfirm,
+      confirmRef,
       saveSearch,
       searchHistory,
       onQueryChange,
       addQuery,
       save,
       deleteSearch,
-      remove,
       searchBox,
-      back
+      back,
+      clearSearch
     }
   },
   components: {

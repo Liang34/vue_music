@@ -22,21 +22,24 @@
         </div>
         <div class="name">
           <p class="song">{{item.name}}</p>
-          <p class="singer">{{item.singer}}</p>
+          <p class="singer1">{{item.singer}}</p>
         </div>
       </li>
-      <loading v-show="haveMore && query"></loading>
+      <loading v-show="hasMore && query"></loading>
     </ul>
-    <div v-show="!haveMore && !songs.length && query" class="no-result-wrapper">
+    <div v-show="!hasMore && !songs.length && query" class="no-result-wrapper">
       抱歉，暂无搜索结果
     </div>
   </div>
 </template>
 <script>
 import { ref, watch } from 'vue'
-import { getSearchSongs, getSearchSuggest } from 'service/search'
+import { getSearchSongs, getSearchSuggest, getSongDetail } from 'service/search'
 import { createSearchSong } from 'common/js/song'
+import { useStore } from 'vuex'
+import loading from 'components/base/loading/loading'
 export default {
+  components: { loading },
   name: 'suggest',
   props: {
     query: String,
@@ -58,6 +61,7 @@ export default {
     const loadingText = ref('')
     const noResultText = ref('抱歉，暂无搜索结果')
     const searchShow = ref(true)
+    const store = useStore()
     // const manualLoading = ref(false)
     watch(() => props.query, async (newQuery) => {
       if (!newQuery) {
@@ -87,13 +91,15 @@ export default {
         ret.push(createSearchSong(item))
       })
       songs.value = ret
-      console.log(songs.value)
       emit('refresh')
       page.value += 30
       const resSearch = await getSearchSuggest(props.query)
       suggest.value = resSearch.result
     }
-    const selectSong = () => {
+    const selectSong = async (item) => {
+      const res = await getSongDetail(item.id)
+      item.image = res.songs[0].al.picUrl
+      store.dispatch('insertSong', item)
       emit('select')
     }
     return {
@@ -103,6 +109,7 @@ export default {
       noResultText,
       suggest,
       searchShow,
+      hasMore,
       // loading,
       // noResult,
       // pullUpLoading,
@@ -174,7 +181,7 @@ export default {
         text-overflow: ellipsis;
       // padding-bottom: 20px
       }
-      .singer {
+      .singer1 {
         font-size: 12px;
         color: $color-text-g;
         white-space: nowrap;

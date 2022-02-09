@@ -1,11 +1,10 @@
 <template>
-  <div class="player" v-show="playlist.length > 0">
-    <!-- 正常播放器-->
-    <!-- <transition name="normal" >
-      <div class="normal-player" v-show="fullScreen" @touchstart.once="firstPlay">
+  <div class="player" v-show="playlist.length">
+    <transition name="normal">
+      <div class="normal-player" v-show="fullScreen">
         <div class="background">
           <div class="filter"></div>
-          <img :src="currentSong.image" width="100%" height="100%">
+          <img :src="currentSong.image" width="100%" height="100%" />
         </div>
         <div class="top">
           <div class="back" @click="back">
@@ -25,15 +24,25 @@
             </div>
           </transition>
           <transition name="middleR">
-            <scroll class="middle-r" ref="lyricList" v-show="currentShow === 'lyric'" :data="currentLyric && currentLyric.lines">
+            <scroll
+              class="middle-r"
+              ref="lyricScrollRef"
+              v-show="currentShow === 'lyric'"
+            >
               <div class="lyric-wrapper">
-                <div class="currentLyric" v-if="currentLyric">
-                  <p ref="lyricLine" class="text" :class="{'current': currentLineNum === index}"
-                    v-for="(line, index) in currentLyric.lines" :key="line.key">
+                <div v-if="currentLyric" ref="lyricListRef" class="currentLyric">
+                  <p
+                    class="text"
+                    :class="{'current': currentLineNum ===index}"
+                    v-for="(line,index) in currentLyric.lines"
+                    :key="line.num"
+                  >
                     {{line.txt}}
                   </p>
                 </div>
-                  <p class="no-lyric" v-if="currentLyric === null">{{upDatecurrentLyric}}</p>
+                <div class="no-lyric" v-show="pureMusicLyric">
+                  <p>{{pureMusicLyric}}</p>
+                </div>
               </div>
             </scroll>
           </transition>
@@ -65,9 +74,9 @@
           </div>
         </div>
       </div>
-    </transition> -->
+    </transition>
     <!-- 小播放器 -->
-    <!-- <transition name="mini">
+    <transition name="mini">
       <div class="mini-player" v-show="!fullScreen" @click.stop="open">
         <div class="icon">
           <img :class="cdCls"  :src="currentSong.image" width="50" height="50">
@@ -77,7 +86,7 @@
           <div class="desc" v-html="currentSong.singer"></div>
         </div>
         <div class="control" @click.stop="togglePlaying">
-          <progress-circle :radius="radius" :percent="percent">
+          <progress-circle :radius="32" :percent="percent">
             <i class="iconfont icon-shangsanjiaoxing" :class="miniIcon"></i>
           </progress-circle>
         </div>
@@ -85,202 +94,106 @@
           <i class="iconfont icon-gedan"></i>
         </div>
       </div>
-    </transition> -->
-    <!-- <playlist @stopMusic="stopMusic" ref="playlist"></playlist> -->
-    <!-- <audio id="music-audio" ref="audio" @ended="end" autoplay @canplay="ready" @error="error" @timeupdate="updateTime"></audio> -->
+    </transition>
+    <play-list @stopMusic="stopMusic" ref="playlistRef"></play-list>
+    <audio
+      ref="audioRef"
+      @pause="pause"
+      @canplay="ready"
+      @error="error"
+      @timeupdate="updateTime"
+      @ended="end"
+    ></audio>
   </div>
 </template>
 
 <script>
-// import ProgressCircle from 'components/progress-circle'
-// import ProgressBar from 'components/player/progress-bar'
-import Lyric from 'lyric-parser'
-// import Scroll from 'components/base/scroll/scroll'
-// import Playlist from 'components/play-list'
-import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { getSong, getLyric } from 'service/song'
+import { computed, ref, watch } from 'vue'
+import { useStore } from 'vuex'
+import useLyric from './use-lyric'
+import { getSong } from 'service/song'
+import scroll from 'components/base/scroll/scroll.vue'
+import progressBar from 'components/player/progress-bar'
+import progressCircle from 'components/player/progress-circle'
 import { playMode } from 'common/js/config'
 import { shuffle } from 'common/js/utl'
-
+import playList from 'components/play-list/play-list'
 export default {
+  components: { scroll, progressBar, progressCircle, playList },
   setup () {
-    return {
-    }
-  },
-  data () {
-    return {
-      url: '',
-      songReady: false,
-      currentTime: 0,
-      duration: 0,
-      percent: 0,
-      radius: 32,
-      currentLyric: null,
-      currentLineNum: 0,
-      currentShow: 'cd',
-      playingLyric: '',
-      noLyric: false
-    }
-  },
-  created () {
-    this.move = false
-  },
-  computed: {
-    iconMode () {
-      console.log(this.mode)
-      if (this.mode === playMode.sequence) {
+    // data
+    const currentShow = ref('cd') // 显示封面还是歌词
+    const duration = ref(0)
+    const audioRef = ref()
+    const cdCls = computed(() => playing.value ? 'play' : 'play pause') // 控制是否旋转
+    const songReady = ref(false)
+    const currentTime = ref(0)
+    const percent = ref(0)
+    const playlistRef = ref()
+    const iconMode = computed(() => {
+      if (mode.value === playMode.sequence) {
         return 'icon-shunxubofang'
-      } else if (this.mode === playMode.loop) {
+      } else if (mode.value === playMode.loop) {
         return 'icon-danquxunhuan'
       } else {
         return 'icon-suijibofang'
       }
-    },
-    cdCls () {
-      return this.playing ? 'play' : 'play pause'
-    },
-    miniIcon () {
-      return this.playing ? 'iconfont icon-shixinzhengfangxing fa-stop' : 'fa-play'
-    },
-    playIcon () {
-      return this.playing ? 'icon-stop' : 'icon-bofang'
-    },
-    upDatecurrentLyric () {
-      if (this.noLyric) {
-        return '暂无歌词'
-      }
-      return '歌词加载中'
-    },
-    ...mapGetters([
-      'playlist',
-      'fullScreen',
-      'currentSong',
-      'playing',
-      'currentIndex',
-      'mode',
-      'sequenceList',
-      'favoriteList'
-    ])
-  },
-  watch: {
-    currentSong (newVal, oldVal) {
-      if (!newVal.id) {
+    })
+    const miniIcon = computed(() => {
+      return playing.value ? 'iconfont icon-shixinzhengfangxing fa-stop' : 'fa-play'
+    })
+    // store
+    const store = useStore()
+    const playlist = computed(() => store.getters.playlist)
+    const fullScreen = computed(() => store.getters.fullScreen)
+    const currentSong = computed(() => store.getters.currentSong)
+    const playing = computed(() => store.getters.playing)
+    const mode = computed(() => store.getters.mode)
+    const sequenceList = computed(() => store.getters.sequenceList)
+    const currentIndex = computed(() => store.getters.currentIndex)
+    const playIcon = computed(() => playing.value ? 'icon-stop' : 'icon-bofang')
+    // hooks
+    const {
+      currentLyric, currentLineNum, pureMusicLyric,
+      playingLyric, lyricScrollRef, lyricListRef,
+      playLyric
+      // stopLyric
+    } = useLyric({
+      songReady,
+      currentTime
+    })
+    // watch
+    watch(currentSong, async (newSong) => {
+      if (!newSong.id) {
         return
       }
-      if (newVal.id === oldVal.id) {
-        return
-      }
-      this.$refs.audio.pause()
-      this.$refs.audio.currentTime = 0
-      this._getSong(newVal.id)
-    },
-    url (newUrl) {
-      this._getLyric(this.currentSong.id)
-      this.$refs.audio.src = newUrl
-      // let play = setInterval(() => {
-      //   if (this.songReady) {
-      //     this.$refs.audio.play()
-      //     clearInterval(play)
-      //   }
-      //   console.log('play')
-      // }, 20)
+      const res = await getSong(newSong.id)
+      const url = res.data[0].url
+      console.log(res.data[0])
+      currentTime.value = 0
+      songReady.value = false
+      const audioEl = audioRef.value
+      audioEl.src = url
       const stop = setInterval(() => {
-        this.duration = this.$refs.audio.duration
-        if (this.duration) {
+        duration.value = audioEl.duration
+        if (duration.value) {
           clearInterval(stop)
         }
       }, 150)
-      this.setPlayingState(true)
-    },
-    currentTime () {
-      this.percent = this.currentTime / this.duration
+      audioEl.play()
+      store.commit('SET_PLAYING_STATE', true)
+    })
+    watch(currentTime, (newTime) => {
+      percent.value = newTime / duration.value
+    })
+    // func
+    const back = () => {
+      store.commit('SET_FULL_SCREEN', false)
     }
-  },
-  methods: {
-    firstPlay () {
-      console.log('firstPlay')
-      this.$refs.audio.play()
-    },
-    stopMusic () {
-      // 删除最后一首的时候暂停音乐
-      this.$refs.audio.pause()
-      console.log('删除最后一首的时候暂停音乐')
-    },
-    showPlaylist () {
-      this.$refs.playlist.show()
-    },
-    changeMiddle () {
-      if (this.currentShow === 'cd') {
-        this.currentShow = 'lyric'
-      } else {
-        this.currentShow = 'cd'
-      }
-      // console.log(this.currentShow)
-    },
-    getFavoriteIcon (song) {
-      if (this.isFavorite(song)) {
-        return 'icon-xihuanfill'
-      }
-      return 'icon-xihuan'
-    },
-    toggleFavorite (song) {
-      if (this.isFavorite(song)) {
-        this.deleteFavoriteList(song)
-      } else {
-        this.saveFavoriteList(song)
-      }
-    },
-    isFavorite (song) {
-      const index = this.favoriteList.findIndex((item) => {
-        return item.id === song.id
-      })
-      return index > -1
-    },
-    changeMode () {
-      const mode = (this.mode + 1) % 3
-      this.setPlayMode(mode)
-      let list = null
-      if (mode === playMode.random) {
-        list = shuffle(this.sequenceList)
-      } else {
-        list = this.sequenceList
-      }
-      this._resetCurrentIndex(list)
-      this.setPlaylist(list)
-    },
-    _resetCurrentIndex (list) {
-      const index = list.findIndex((item) => {
-        return item.id === this.currentSong.id
-      })
-      this.setCurrentIndex(index)
-    },
-    percentChange (percent) {
-      this.move = true
-      const currentTime = this.duration * percent
-      this.currentTime = currentTime
-      if (this.currentLyric) {
-        this.currentLyric.seek(currentTime * 1000)
-      }
-    },
-    percentChangeEnd (percent) {
-      this.move = false
-      const currentTime = this.duration * percent
-      this.$refs.audio.currentTime = currentTime
-      if (!this.playing) {
-        this.$refs.audio.play()
-        this.setPlayingState(true)
-      }
-      if (this.currentLyric) {
-        this.currentLyric.seek(currentTime * 1000)
-      }
-    },
-    updateTime (e) {
-      if (this.move) {
-        return
-      }
-      this.currentTime = e.target.currentTime
-    },
-    format (interval) {
+    const changeMiddle = () => {
+      currentShow.value = currentShow.value === 'cd' ? 'lyric' : 'cd'
+    }
+    const format = (interval) => {
       interval = interval | 0
       const minute = interval / 60 | 0
       let second = interval % 60
@@ -288,128 +201,182 @@ export default {
         second = '0' + second
       }
       return minute + ':' + second
-    },
-    end () {
-      if (this.mode === playMode.loop) {
-        this.loop()
-      } else {
-        this.next()
+    }
+    const updateTime = (e) => {
+      currentTime.value = e.target.currentTime
+    }
+    const percentChange = (percent) => {
+      const newCurrentTime = duration.value * percent
+      currentTime.value = newCurrentTime
+      if (currentLyric.value) {
+        currentLyric.value.seek(newCurrentTime * 1000)
       }
-    },
-    loop () {
-      this.$refs.audio.currentTime = 0
-      this.$refs.audio.play()
-      if (this.currentLyric) {
-        this.currentLyric.seek()
+    }
+    const percentChangeEnd = (percent) => {
+      const newCurrentTime = duration.value * percent
+      audioRef.value.currentTime = newCurrentTime
+      if (playing.value) {
+        audioRef.value.play()
+        store.commit('SET_PLAYING_STATE', true)
       }
-    },
-    error () {
-      this.songReady = true
-    },
-    ready () {
-      this.songReady = true
-      this.savePlayHistory(this.currentSong)
-    },
-    next () {
-      if (!this.songReady) {
+      if (currentLyric.value) {
+        currentLyric.value.seek(newCurrentTime * 1000)
+      }
+    }
+    const ready = () => {
+      if (songReady.value) {
         return
       }
-      if (this.playlist.length === 1) {
-        this.loop()
+      songReady.value = true
+      playLyric()
+      store.dispatch('savePlayHistory', currentSong.value)
+      // savePlay(currentSong.value)
+    }
+    const changeMode = () => {
+      const newMode = (mode.value + 1) % 3
+      store.commit('SET_PLAY_MODE', newMode)
+      let list = null
+      if (mode.value === playMode.random) {
+        list = shuffle(sequenceList.value)
+      } else {
+        list = sequenceList.value
+      }
+      resetCurrentIndex(list)
+      store.commit('SET_PLAYLIST', list)
+    }
+    const resetCurrentIndex = (list) => {
+      const index = list.findIndex((item) => {
+        return item.id === currentSong.value.id
+      })
+      store.commit('SET_CURRENT_INDEX', index)
+    }
+    const prev = () => {
+      if (!songReady.value) {
+        return
+      }
+      songReady.value = false
+      let index = currentIndex.value - 1
+      if (index === -1) {
+        index = playlist.value.length - 1
+      }
+      store.commit('SET_CURRENT_INDEX', index)
+      if (!playing.value) {
+        togglePlaying()
+      }
+      songReady.value = false
+    }
+    const next = () => {
+      if (!songReady.value) {
+        return
+      }
+      if (playlist.value.length === 1) {
+        loop()
         return
       } else {
-        let index = this.currentIndex + 1
-        if (index === this.playlist.length) {
+        let index = currentIndex.value + 1
+        if (index === playlist.value.length) {
           index = 0
         }
-        this.setCurrentIndex(index)
-        // this.$refs.audio.play()
-        if (!this.playing) {
-          this.togglePlaying()
+        store.commit('SET_CURRENT_INDEX', index)
+        if (!playing.value) {
+          togglePlaying()
         }
       }
-      this.songReady = false
-    },
-    prev () {
-      if (!this.songReady) {
-        return
+      songReady.value = false
+    }
+    const loop = () => {
+      audioRef.value.currentTime = 0
+      audioRef.value.play()
+      if (currentLyric.value) {
+        currentLyric.value.seek()
       }
-      this.songReady = false
-      let index = this.currentIndex - 1
-      if (index === -1) {
-        index = this.playlist.length - 1
+    }
+    const togglePlaying = () => {
+      const audio = audioRef.value
+      store.commit('SET_PLAYING_STATE', !playing.value)
+      playing.value ? audio.play() : audio.pause()
+      if (currentLyric.value) {
+        currentLyric.value.togglePlay()
       }
-      this.setCurrentIndex(index)
-      if (!this.playing) {
-        this.togglePlaying()
+    }
+    const isFavorite = (song) => {
+      const favoriteList = computed(() => store.getters.favoriteList)
+      const index = favoriteList.value.findIndex((item) => {
+        return item.id === song.id
+      })
+      return index > -1
+    }
+    const getFavoriteIcon = (song) => {
+      if (isFavorite(song)) {
+        return 'icon-xihuanfill'
       }
-      this.songReady = false
-    },
-    back () {
-      this.setFullScreen(false)
-      this.currentShow = 'cd'
-    },
-    open () {
-      this.setFullScreen(true)
-    },
-    togglePlaying () {
-      const audio = this.$refs.audio
-      this.setPlayingState(!this.playing)
-      this.playing ? audio.play() : audio.pause()
-      if (this.currentLyric) {
-        this.currentLyric.togglePlay()
-      }
-    },
-    // 异步获取歌曲信息
-    async _getSong (id) {
-      const res = await getSong(id)
-      console.log(res)
-      this.url = res.data[0].url
-    },
-    // 获取歌曲信息
-    async _getLyric (id) {
-      if (this.currentLyric) {
-        this.currentLyric.stop()
-        this.currentLyric = null
-      }
-      this.noLyric = false
-      const res = await getLyric(id)
-      console.log(res.lrc)
-      this.currentLyric = new Lyric(res.lrc.lyric, this.handleLyric)
-      if (this.playing) {
-        this.currentLyric.play()
-        // 歌词重载以后 高亮行设置为 0
-        this.currentLineNum = 0
-        this.$refs.lyricList.scrollTo(0, 0, 1000)
-      }
-    },
-    handleLyric ({ lineNum, txt }) {
-      this.currentLineNum = lineNum
-      if (lineNum > 5) {
-        const lineEl = this.$refs.lyricLine[lineNum - 5]
-        this.$refs.lyricList.scrollToElement(lineEl, 1000)
+      return 'icon-xihuan'
+    }
+    const toggleFavorite = (song) => {
+      if (isFavorite(song)) {
+        store.dispatch('deleteFavoriteList', song)
       } else {
-        this.$refs.lyricList.scrollTo(0, 0, 1000)
+        store.dispatch('saveFavoriteList', song)
       }
-    },
-    ...mapMutations({
-      setFullScreen: 'SET_FULL_SCREEN',
-      setPlayingState: 'SET_PLAYING_STATE',
-      setCurrentIndex: 'SET_CURRENT_INDEX',
-      setPlayMode: 'SET_PLAY_MODE',
-      setPlaylist: 'SET_PLAYLIST'
-    }),
-    ...mapActions([
-      'saveFavoriteList',
-      'deleteFavoriteList',
-      'savePlayHistory'
-    ])
-  },
-  components: {
-    // ProgressBar,
-    // ProgressCircle,
-    // Scroll
-    // Playlist
+    }
+    const end = () => {
+      if (mode.value === playMode.loop) {
+        loop()
+      } else {
+        next()
+      }
+    }
+    const open = () => {
+      store.commit('SET_FULL_SCREEN', true)
+    }
+    const showPlaylist = () => {
+      playlistRef.value.show()
+    }
+    const stopMusic = () => {
+      audioRef.value.pause()
+    }
+    return {
+      currentShow,
+      audioRef,
+      duration,
+      currentTime,
+      percent,
+      // bottomButton
+      iconMode,
+      changeMode,
+      prev,
+      next,
+      playIcon,
+      getFavoriteIcon,
+      toggleFavorite,
+      togglePlaying,
+      // miniPlayer
+      open,
+      miniIcon,
+      showPlaylist,
+      playlistRef,
+      stopMusic,
+      // lyric
+      currentLyric,
+      currentLineNum,
+      pureMusicLyric,
+      playingLyric,
+      lyricScrollRef,
+      lyricListRef,
+      // d
+      cdCls,
+      playlist,
+      fullScreen,
+      currentSong,
+      back,
+      changeMiddle,
+      format,
+      updateTime,
+      percentChange,
+      percentChangeEnd,
+      ready,
+      end
+    }
   }
 }
 </script>

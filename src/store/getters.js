@@ -1,5 +1,5 @@
 
-import { getSong } from 'service/song'
+// import { getSong } from 'service/song'
 
 export const musicList = state => state.musicList
 
@@ -32,9 +32,9 @@ export const currentSong = (state) => {
 }
 
 // 获取当前播放的歌曲
-export const currentSongUrl = (state) => {
-  getSong(state.playlist[state.currentIndex]).then((res) => {
-    console.log(state.playlist, 'res')
-    return res.data.data.url || ''
-  })
-}
+// export const currentSongUrl = (state) => {
+//   console.log(state.playlist[state.currentIndex])
+//   getSong(state.playlist[state.currentIndex].id).then((res) => {
+//     return res.data?.data.url || ''
+//   })
+// }

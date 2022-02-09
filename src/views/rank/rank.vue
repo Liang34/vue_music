@@ -30,7 +30,6 @@ import Scroll from 'components/base/scroll/scroll'
 import Loading from 'components/base/loading/loading'
 // import { playlistMixin } from 'common/js/mixin'
 import { useStore } from 'vuex'
-
 const YUNMUSIC_TOP = [0, 1, 2, 3, 4, 22, 23]// 榜单名
 
 export default {
@@ -56,7 +55,6 @@ export default {
       getTopList()
     })
     const selectItem = (item) => {
-      console.log(item)
       router.push({
         path: `/rank/${item.id}`
       })

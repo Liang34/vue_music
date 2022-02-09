@@ -1,7 +1,7 @@
 <template>
   <div class="singer" ref="singer">
-    <list-view :data="this.singers"></list-view>
-    <!-- <router-view></router-view> -->
+    <list-view :data="this.singers" @select='selectItem'></list-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -9,6 +9,7 @@
 import { getSingers } from 'service/singer'
 import Singer from 'common/js/singer'
 import listView from 'components/list-view/list-view'
+import { mapMutations } from 'vuex'
 const pinyin = require('pinyin')
 
 const HOT_NAME = '热门'
@@ -23,17 +24,24 @@ export default {
     this._getSingers()
   },
   methods: {
+    selectItem (singer) {
+      this.$router.push({
+        path: `/singer/${singer.id}`
+      })
+      this.setSinger(singer)
+    },
+    ...mapMutations({
+      setSinger: 'SET_SINGER'
+    }),
     async _getSingers () {
       const res = await getSingers()
       const s = res.artists
       s.map((item) => {
-        // console.log(pinyin("中心"));// [ [ 'zhōng' ], [ 'xīn' ] ]
         const py = pinyin(item.name[0], {
           style: pinyin.STYLE_FIRST_LETTER
         })
         item.initial = py[0][0].toUpperCase()
       })
-      // console.log(s)
       this.singers = this._normalizeSinger(s)
     },
     _normalizeSinger (list) {
