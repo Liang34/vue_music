@@ -2,9 +2,11 @@
   <div id="app">
     <header-guide />
     <tab />
+    <router-view v-slot="{ Component }">
     <keep-alive>
-      <router-view />
+      <component :is="Component"/>
     </keep-alive>
+  </router-view>
     <play />
   </div>
 </template>
