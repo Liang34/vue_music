@@ -10,14 +10,15 @@
             <li class="item" v-for="item in discList" :key="item.id">
               <div class="icon" @click="selectList(item)">
                 <div class="gradients"></div>
-                <img :src="item.picUrl">
+                <img v-lazy="item.picUrl">
               </div>
               <p class="play-count">
                 <i class="fa iconfont icon-erji"></i>
                 {{Math.floor(item.playCount / 10000) }}万
               </p>
               <div class="text">
-                <p class="name">{{item.name}}</p>
+                <p class="name">{{item.name.length > 20
+                  ? item.name.substring(0, 20) + '...' : item.name}}</p>
               </div>
             </li>
           </ul>
@@ -36,7 +37,7 @@
         </div>
       </div>
     </scroll>
-    <!-- <router-view></router-view> -->
+    <router-view></router-view>
   </div>
 </template>
 
@@ -45,7 +46,7 @@ import { createRecommendSong } from 'common/js/song'
 import { reqBanner, reqRecommendList, reqNewMusic } from 'service/recommend'
 import Scroll from 'components/base/scroll/scroll.vue'
 import Slider from 'components/base/slider/slider'
-// import { mapMutations, mapActions } from 'vuex'
+import { mapMutations, mapActions } from 'vuex'
 
 export default {
   data () {
@@ -68,9 +69,22 @@ export default {
     this.musicList = list
   },
   methods: {
-    selectList () {
-
-    }
+    selectList (item) {
+      this.$router.push({
+        path: `/recommend/${item.id}`
+      })
+      this.setMuiscList(item)
+    },
+    selectSong (item) {
+      this.insertSong(item)
+    },
+    ...mapMutations({
+      setMuiscList: 'SET_MUSIC_LIST',
+      setFullScreen: 'SET_FULL_SCREEN'
+    }),
+    ...mapActions([
+      'insertSong'
+    ])
   },
   components: {
     Slider,

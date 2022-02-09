@@ -2,17 +2,24 @@
   <div id="app">
     <header-guide />
     <tab />
-    <router-view />
+    <router-view v-slot="{ Component }">
+    <keep-alive>
+      <component :is="Component"/>
+    </keep-alive>
+  </router-view>
+    <play />
   </div>
 </template>
 
 <script>
 import HeaderGuide from '@/components/HeaderGuide'
 import Tab from '@/components/Tab'
+import Play from '@/views/play/play'
 export default {
   components: {
     HeaderGuide,
-    Tab
+    Tab,
+    Play
   }
 }
 </script>

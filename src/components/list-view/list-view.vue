@@ -5,7 +5,7 @@
         <h2 class="title">{{ group.title }}</h2>
         <ul>
           <li v-for="item in group.items" :key="item.id" class="item" @click="onItemClick(item)">
-            <img class="avatar" :src="item.avatar" />
+            <img class="avatar" v-lazy="item.avatar" />
             <span class="name">{{ item.name }}</span>
           </li>
         </ul>

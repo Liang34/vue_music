@@ -2,7 +2,8 @@ import axios from 'axios'
 
 const fetch = axios.create({
   withCredentials: true,
-  timeout: 50000
+  timeout: 50000,
+  baseURL: 'http://120.25.239.32:3000'
 })
 fetch.interceptors.request.use(
   async (config) => {

@@ -13,7 +13,6 @@ export default function useFixed (props) {
     if (scrollY.value < 0) {
       return ''
     }
-    console.log(currentIndex.value)
     const currentGroup = props.data[currentIndex.value]
     return currentGroup ? currentGroup.title : ''
   })
@@ -27,14 +26,12 @@ export default function useFixed (props) {
   })
 
   watch(() => props.data, async () => {
-    console.log(props)
     await nextTick()// 等待DOM变化再计算
     calculate()
   })
 
   watch(scrollY, (newY) => {
     const listHeightsVal = listHeights.value
-    console.log(scrollY)
     for (let i = 0; i < listHeightsVal.length - 1; i++) {
       const heightTop = listHeightsVal[i]
       const heightBottom = listHeightsVal[i + 1]
@@ -61,7 +58,6 @@ export default function useFixed (props) {
   }
 
   function onScroll (pos) {
-    console.log(1)
     scrollY.value = -pos.y// bs的计算是负值
   }
 

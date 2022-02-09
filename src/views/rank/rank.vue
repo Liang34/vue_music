@@ -4,7 +4,7 @@
       <ul class="warp">
         <li class="item"  v-for="item in yunTopList" :key="item.id" @click="selectItem(item)">
           <div class="icon">
-            <img v-lazy="item.coverImgUrl" width="100" height="100">
+            <img :src="item.coverImgUrl" width="100" height="100">
           </div>
           <ul class="songlist">
             <li class="song" v-for="(song, index) in item.top" :key="index">
@@ -14,9 +14,6 @@
           </ul>
         </li>
       </ul>
-      <!-- <div class="loading-container" v-show="!yunTopList.length">
-        <loading></loading>
-      </div> -->
       <div v-show="showLoading" class="loading-content">
         <loading></loading>
       </div>
@@ -26,55 +23,56 @@
 </template>
 
 <script>
-import { getTop } from 'api/rank'
-import Scroll from 'components/Scroll'
-import Loading from 'components/loading/loading'
-import { playlistMixin } from 'common/js/mixin'
-import { mapMutations } from 'vuex'
-
-const YUNMUSIC_TOP = [0, 1, 2, 3, 4, 22, 23]
+import { getTop } from 'service/rank'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import Scroll from 'components/base/scroll/scroll'
+import Loading from 'components/base/loading/loading'
+// import { playlistMixin } from 'common/js/mixin'
+import { useStore } from 'vuex'
+const YUNMUSIC_TOP = [0, 1, 2, 3, 4, 22, 23]// 榜单名
 
 export default {
-  mixins: [playlistMixin],
-  data () {
-    return {
-      yunTopList: [],
-      showLoading: true
-    }
-  },
-  created () {
-    this._getTopList()
-  },
-  methods: {
-    selectItem (item) {
-      this.$router.push({
-        path: `/rank/${item.id}`
-      })
-      this.setTopList(item)
-    },
-    handlePlaylist (playlist) {
-      const bottom = playlist.length > 0 ? '60px' : ''
-      this.$refs.rank.style.bottom = bottom
-      this.$refs.scroll.refresh()
-    },
-    async _getTopList () {
+  setup () {
+    const yunTopList = ref([]) // 排行榜列表
+    const showLoading = ref(true)
+    const router = useRouter()
+    const store = useStore()
+    const getTopList = async () => {
       for (let i = 0; i < YUNMUSIC_TOP.length; i++) {
         const res = await getTop(YUNMUSIC_TOP[i])
-        // console.log(res)
         if (res.code === 200) {
           const list = res.playlist
           list.top = res.playlist.tracks.slice(0, 3)
-          this.yunTopList.push(list)
+          yunTopList.value.push(list)
           if (i === YUNMUSIC_TOP.length - 1) {
-            this.showLoading = false
+            showLoading.value = false
           }
         }
       }
-    },
-    ...mapMutations({
-      setTopList: 'SET_TOP_LIST'
+    }
+    onMounted(() => {
+      getTopList()
     })
+    const selectItem = (item) => {
+      router.push({
+        path: `/rank/${item.id}`
+      })
+      store.commit('SET_TOP_LIST', item)
+    }
+    return {
+      yunTopList,
+      showLoading,
+      selectItem
+    }
   },
+  // methods: {
+  //   handlePlaylist (playlist) {
+  //     const bottom = playlist.length > 0 ? '60px' : ''
+  //     this.$refs.rank.style.bottom = bottom
+  //     this.$refs.scroll.refresh()
+  //   },
+  // },
   components: {
     Scroll,
     Loading
@@ -82,7 +80,7 @@ export default {
 }
 </script>
 
-<style scoped lang="less" >
+<style scoped lang="scss" >
 @import "common/style/variable";
 
 .rank {
@@ -126,8 +124,8 @@ export default {
         padding: 0 20px;
         height: 100px;
         overflow: hidden;
-        color: @color-text;
-        font-size: @font-size-small-x;
+        color: $color-text;
+        font-size: $font-size-small-x;
         .song {
           overflow: hidden;
           text-overflow: ellipsis;

@@ -3,23 +3,21 @@
   <div class="music-list">
     <div class="header" ref="header">
       <div class="back" @click="back">
-        <i class="iconfont icon-fanhui fa-angle-left"></i>
+        <i class="fa iconfont icon-fanhui fa-angle-left"></i>
       </div>
       <div class="text">
-        <h1 class="title">{{headerTitle}}</h1>
+        <h1 class="title">{{topList.name}}</h1>
       </div>
     </div>
-    <scroll class="list"
-    @scroll="scroll"
-    :probe-type="probeType"
-    :listen-scroll="listenScroll"
-    :data="songs"
-    ref="list">
+    <scroll class="list" ref="list">
       <div class="music-list-wrapper">
         <div class="bg-image" :style="bgStyle" ref="bgImage">
           <div class="filter"></div>
           <div class="text">
-            <h2 class="list-title">{{title}}</h2>
+            <h2 class="list-title">
+              {{topList.name}}
+            </h2>
+            <p class="update">{{updateTime}}</p>
           </div>
         </div>
         <div class="song-list-wrapper">
@@ -31,7 +29,7 @@
           <song-list @select="selectItem" :songs="listDetail"></song-list>
         </div>
       </div>
-      <div class="loading-content">
+      <div v-show="!listDetail.length" class="loading-content">
         <loading></loading>
       </div>
     </scroll>
@@ -41,123 +39,111 @@
 
 <script>
 import Scroll from 'components/base/scroll/scroll'
-import SongList from 'components/song-list/song-list'
 import Loading from 'components/base/loading/loading'
-import { mapGetters, mapActions } from 'vuex'
+import SongList from 'components/song-list/song-list'
+// import { mapGetters, mapActions } from 'vuex'
 // import { playlistMixin } from 'common/js/mixin'
-import { getSingerDetail } from 'service/singer'
 import { createSong } from 'common/js/song'
+import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
-const RESERVED_HEIGHT = 44
+// const RESERVED_HEIGHT = 44
 
 export default {
   // mixins: [playlistMixin],
-  props: {
-    songs: {
-      type: Array
+  setup () {
+    const router = useRouter()
+    const store = useStore()
+    const topList = computed(() => store.getters.topList)
+    const listDetail = ref([])
+    const updateTime = computed(() => {
+      const time = new Date(topList.value.updateTime)
+      const month = time.getMonth() + 1
+      const day = time.getDate()
+      return `最近更新:${month}月${day}日`
+    })
+    const selectItem = (item, index) => {
+      store.dispatch('selectPlay', {
+        list: listDetail,
+        index: index
+      })
     }
-  },
-  data () {
-    return {
-      listDetail: [],
-      scrollY: 0,
-      node: null,
-      headerTitle: '歌手'
+    const bgStyle = computed(() => `background-image: url(${topList.value.coverImgUrl})`)
+    const back = () => {
+      router.back()
     }
-  },
-  created () {
-    this._getDetail()
-    this.probeType = 3
-    this.listenScroll = true
-  },
-  mounted () {
-    this.imageHeight = this.$refs.bgImage.clientHeight
-    this.minTranslateY = -this.imageHeight + RESERVED_HEIGHT
-  },
-  computed: {
-    headerTitleTouchDown () {
-      let name = ''
-      if (this.singer.aliaName) {
-        name = this.singer.name + ` (${this.singer.aliaName})`
-      } else {
-        name = this.singer.name
-      }
-      return name
-    },
-    bgStyle () {
-      return `background-image: url(${this.singer.avatar})`
-    },
-    title () {
-      return this.headerTitleTouchDown
-    },
-    ...mapGetters([
-      'singer'
-    ])
-  },
-  methods: {
-    handlePlaylist (playlist) {
-      const bottom = playlist.length > 0 ? '60px' : ''
-      this.$refs.list.$el.style.bottom = bottom
-      this.$refs.list.refresh()
-    },
-    async _getDetail () {
-      if (!this.singer.id) {
-        this.$router.push('/singer')
-      }
-      const res = await getSingerDetail(this.singer.id)
-      if (res.code === 200) {
-        this.node = res.hotSongs
-      }
-    },
-    _normalizeSongs (list) {
+    const normalizeSongs = (list) => {
       const ret = []
       list.forEach((item) => {
         ret.push(createSong(item))
       })
-      return ret
-    },
-    selectItem (item, index) {
-      this.selectPlay({
-        list: this.listDetail,
-        index: index
-      })
-    },
-    scroll (pos) {
-      this.scrollY = pos.y
-    },
-    back () {
-      this.$router.back()
-    },
-    sequence () {
-      const list = this.listDetail
-      this.sequencePlay({
-        list: list
-      })
-    },
-    ...mapActions([
-      'selectPlay',
-      'sequencePlay'
-    ])
-  },
-  watch: {
-    node (val) {
-      this.listDetail = this._normalizeSongs(val)
-    },
-    scrollY (newY) {
-      // let translateY = Math.max(this.minTranslateY, newY)
-      const percent = Math.abs(newY / this.imageHeight)
-      if (newY < (this.minTranslateY + RESERVED_HEIGHT - 20)) {
-        this.headerTitle = this.headerTitleTouchDown
-      } else {
-        this.headerTitle = '歌手'
+      listDetail.value = ret
+    }
+    onMounted(() => {
+      if (!topList.value.id) {
+        router.push('/rank')
+        return
       }
-      if (newY < 0) {
-        this.$refs.header.style.background = `rgba(252, 239, 169, ${percent})`
-      } else {
-        this.$refs.header.style.background = 'rgba(212, 68, 57, 0)'
-      }
+      normalizeSongs(topList.value.tracks)
+    })
+    return {
+      listDetail,
+      back,
+      topList,
+      updateTime,
+      bgStyle,
+      selectItem
     }
   },
+  // data () {
+  //   return {
+  //     // listDetail: [],
+  //     // scrollY: 0,
+  //     // node: null,
+  //   }
+  // },
+  // mounted () {
+  //   this.imageHeight = this.$refs.bgImage.clientHeight
+  //   this.minTranslateY = -this.imageHeight + RESERVED_HEIGHT
+  // },
+  // methods: {
+  //   handlePlaylist (playlist) {
+  //     const bottom = playlist.length > 0 ? '60px' : ''
+  //     this.$refs.list.$el.style.bottom = bottom
+  //     this.$refs.list.refresh()
+  //   },
+  //   _normalizeSongs (list) {
+  //     if (!this.topList.id) {
+  //       this.$router.push('/rank')
+  //       return
+  //     }
+  //     const ret = []
+  //     list.forEach((item) => {
+  //       ret.push(createSong(item))
+  //     })
+  //     this.listDetail = ret
+  //   },
+  //   selectItem (item, index) {
+  //     this.selectPlay({
+  //       list: this.listDetail,
+  //       index: index
+  //     })
+  //   },
+  //   scroll (pos) {
+  //     this.scrollY = pos.y
+  //   },
+  //   sequence () {
+  //     const list = this.listDetail
+  //     this.sequencePlay({
+  //       list: list
+  //     })
+  //   }
+  //   // ...mapActions([
+  //   //   'selectPlay',
+  //   //   'sequencePlay'
+  //   // ])
+  // },
   components: {
     SongList,
     Scroll,
@@ -175,10 +161,7 @@ export default {
   transform: translate3d(30%, 0, 0);
   opacity: 0;
 }
-.loading-content {
-  width: 100%;
-  height: 100%;
-}
+
 .music-list {
   position: fixed;
   z-index: 100;
@@ -194,6 +177,7 @@ export default {
     height: 44px;
     color: #fff;
     z-index: 100;
+    background-color: $color-highlight-background;
     .back {
       position: absolute;
       top: 5px;
@@ -241,16 +225,32 @@ export default {
           position: absolute;
           width: 80%;
           height: 40px;
-          bottom: 40px;
+          bottom: 50px;
           left: 20px;
           color: #fff;
           .list-title {
             position: absolute;
             bottom: 0;
-            font-size: $font-size-large-s;
+            font-style: italic;
+            font-size: $font-size-large;
             line-height: 18px;
             font-weight: bold;
             letter-spacing: 1px;
+            .music {
+              position: absolute;
+              top: -20px;
+              left: 5px;
+              font-style: italic;
+              font-weight: bold;
+              font-size: $font-size-medium;
+            }
+          }
+          .update {
+            position: absolute;
+            top: 45px;
+            left: 7px;
+            line-height: 14px;
+            font-size: $font-size-small;
           }
         }
       }
@@ -285,6 +285,12 @@ export default {
         }
       }
     }
+  }
+  .loading-content {
+    position: fixed;
+    width: 100%;
+    top: 70%;
+    transform: translateY(-50%);
   }
 }
 
